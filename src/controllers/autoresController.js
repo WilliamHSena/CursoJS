@@ -2,23 +2,39 @@ import autores from "../models/Autor.js"
 
 class AutorController {
 
-    static listarAutores = (req, res) => {
-        autores.find((err, autores) => {
-            res.status(200).json(autores)
-        })
-    }
+    static listarAutores = async (req, res) => {
+        try {
+            const autoresResultado = await autores.find();
+    
+            res.status(200).json(autoresResultado);
+        } catch (erro) {
+            res.status(500).json({ message: "Erro interno do servidor"})
+        }
 
-    static listarAutorPorId = (req, res) => {
-        const id = req.params.id;
+     };
 
-        autores.findById(id, (err, autores) => {
-            if(err) {
-                res.status(400).send({message: `${err.message} - Id do autor não localizado.`})
-            } else {
-                res.status(200).send(autores);
-            }
-        })
-    }
+     static listarAutorPorId = async (req, res) => {
+        try {
+          const id = req.params.id;
+    
+          const autorResultado = await autores.findById(id);
+    
+          res.status(200).send(autorResultado);
+        } catch (erro) {
+          res.status(400).send({message: `${erro.message} - Id do Autor não localizado.`});
+        }
+      }
+    // static listarAutorPorId = (req, res) => {
+    //     const id = req.params.id;
+
+    //     autores.findById(id, (err, autores) => {
+    //         if(err) {
+    //             res.status(400).send({message: `${err.message} - Id do autor não localizado.`})
+    //         } else {
+    //             res.status(200).send(autores);
+    //         }
+    //     })
+    // }
 
     static cadastrarAutor = (req, res) => {
         let autor = new autores(req.body);
